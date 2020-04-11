@@ -12,33 +12,42 @@ io.on("connection", socket => {
   // listeners - Safewalker
   // senders - User, Safewalker
   socket.on("walk status", status => {
-    console.log(status);
-    io.emit("walk status", status);
+    try {
+      io.emit("walk status", status);
+    } catch (error) {}
   });
 
   // Send walk status change notification to specific walker
   // listeners - Safewalker
   // senders - User
   socket.on("user walk status", ({walkerId, status}) => {
-    io.sockets.connected[walkerId].emit("user walk status", status);
+    try {
+      io.sockets.connected[walkerId].emit("user walk status", status);
+    } catch (error) {
+      socket.emit("connection lost", true);
+    }
   })
 
   // Send walk status change notification to specific user
   // listeners - User
   // senders - Safewalker
   socket.on("walker walk status", ({userId, status}) => {
-    console.log(userId);
-    console.log(status);
-    io.sockets.connected[userId].emit("walker walk status", status);
+    try {
+      io.sockets.connected[userId].emit("walker walk status", status);
+    } catch (error) {
+      socket.emit("connection lost", true);
+    }
   })
 
   // Send location change notification to specific user
   // listeners - User
   // senders - Safewalker
   socket.on("walker location", ({userId, location}) => {
-    console.log(userId);
-    console.log(location);
-    io.sockets.connected[userId].emit("walker location", location);
+    try {
+      io.sockets.connected[userId].emit("walker location", location);
+    } catch (error) {
+      socket.emit("connection lost", true);
+    }
   })
   
 });

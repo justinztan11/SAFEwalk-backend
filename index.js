@@ -7,20 +7,20 @@ const port = 3000;
 io.on("connection", socket => {
   console.log("a user/safewalker has connected");
   console.log(socket.id);
-  
+
   // Broadcast walk status change notifications to all walkers
   // listeners - Safewalker
   // senders - User, Safewalker
   socket.on("walk status", status => {
     try {
       io.emit("walk status", status);
-    } catch (error) {}
+    } catch (error) { }
   });
 
   // Send walk status change notification to specific walker
   // listeners - Safewalker
   // senders - User
-  socket.on("user walk status", ({walkerId, status}) => {
+  socket.on("user walk status", ({ walkerId, status }) => {
     try {
       io.sockets.connected[walkerId].emit("user walk status", status);
     } catch (error) {
@@ -31,7 +31,7 @@ io.on("connection", socket => {
   // Send walk status change notification to specific user
   // listeners - User
   // senders - Safewalker
-  socket.on("walker walk status", ({userId, status}) => {
+  socket.on("walker walk status", ({ userId, status }) => {
     try {
       io.sockets.connected[userId].emit("walker walk status", status);
     } catch (error) {
@@ -42,14 +42,15 @@ io.on("connection", socket => {
   // Send location change notification to specific user
   // listeners - User
   // senders - Safewalker
-  socket.on("walker location", ({userId, location}) => {
+  socket.on("walker location", ({ userId, lat, lng }) => {
+    console.log(lat);
     try {
-      io.sockets.connected[userId].emit("walker location", location);
+      io.sockets.connected[userId].emit("walker location", { lat, lng });
     } catch (error) {
       socket.emit("connection lost", true);
     }
   })
-  
+
 });
 
 server.listen(port, () => console.log("server running on port: " + port));

@@ -43,7 +43,6 @@ io.on("connection", socket => {
   // listeners - User
   // senders - Safewalker
   socket.on("walker location", ({ userId, lat, lng }) => {
-    console.log(lat);
     try {
       io.sockets.connected[userId].emit("walker location", { lat, lng });
     } catch (error) {
